@@ -11,4 +11,14 @@
     <color name="colorStatusBar">#1E88E5</color>
     <color name="colorPrimaryDark">#3F51B5</color>
     <color name="colorAccent">#8E24AA</color>
+    <color name="red_dark">#FF0000</color>
+    <color name="red_light">#EF9A9A</color>
+    <color name="yellow_dark">#FFFB00</color>
+    <color name="yellow_light">#FFFEBF</color>
+    <color name="green_dark">#4CFF00</color>
+    <color name="green_light">#CDFBB9</color>
+    <color name="blue_dark">#001AFF</color>
+    <color name="blue_light">#BEC5FF</color>
+    <color name="purple_dark">#B300FF</color>
+    <color name="purple_light">#ECBFFF</color>
 </resources>
