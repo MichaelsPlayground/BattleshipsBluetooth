@@ -57,7 +57,29 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/text"
+                android:id="@+id/myRadioGroup"
+                android:orientation="horizontal"
+                android:layout_gravity="center_horizontal"
+                android:checkedButton="@+id/horizontal" >
 
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/horizontal"
+                    android:text="horizontal" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/vertically"
+                    android:text="vertical" />
+
+
+            </RadioGroup>
 
             <Button
                 android:id="@+id/btnOwnBoardDeployRandom"

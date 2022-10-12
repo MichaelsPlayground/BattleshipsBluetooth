@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ListAdapter;
 
 import java.util.ArrayList;
 
@@ -26,6 +27,40 @@ public class OtherBoardActivity extends AppCompatActivity {
         selectedColor = R.color.red_light;
         selectedColor = R.color.blue_dark;
         addButtons();
+
+        Button deployRandom = findViewById(R.id.btnOwnBoardDeployRandom);
+        deployRandom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // todo this is not the final routine
+                // ship 1 = 5 buttons to fill
+                int startId = 0;
+                for (int i = 0; i < 5; i++) {
+                    Button btnShip = (Button) gridview.getAdapter().getItem(i);
+                    btnShip.setBackgroundTintList(ContextCompat.getColorStateList(view.getContext(), R.color.red_light));
+                }
+                // ship 2 = 4 buttons to fill
+                for (int i = 10; i < 14; i++) {
+                    Button btnShip = (Button) gridview.getAdapter().getItem(i);
+                    btnShip.setBackgroundTintList(ContextCompat.getColorStateList(view.getContext(), R.color.blue_light));
+                }
+                // ship 3 = 3 buttons to fill
+                for (int i = 20; i < 23; i++) {
+                    Button btnShip = (Button) gridview.getAdapter().getItem(i);
+                    btnShip.setBackgroundTintList(ContextCompat.getColorStateList(view.getContext(), R.color.green_light));
+                }
+                // ship 4 = 3 buttons to fill
+                for (int i = 30; i < 33; i++) {
+                    Button btnShip = (Button) gridview.getAdapter().getItem(i);
+                    btnShip.setBackgroundTintList(ContextCompat.getColorStateList(view.getContext(), R.color.yellow_light));
+                }
+                // ship 5 = 2 buttons to fill
+                for (int i = 40; i < 42; i++) {
+                    Button btnShip = (Button) gridview.getAdapter().getItem(i);
+                    btnShip.setBackgroundTintList(ContextCompat.getColorStateList(view.getContext(), R.color.purple_light));
+                }
+            }
+        });
     }
 
     void addButtons() {
