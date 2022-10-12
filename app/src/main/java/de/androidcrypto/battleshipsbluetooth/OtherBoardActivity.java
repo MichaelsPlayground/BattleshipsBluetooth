@@ -7,13 +7,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 
 public class OtherBoardActivity extends AppCompatActivity {
 
     GridView gridview;
+
+    int selectedColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,14 +23,15 @@ public class OtherBoardActivity extends AppCompatActivity {
 
         // populate the buttons
         gridview = (GridView) findViewById(R.id.activity_grid);
-
+        selectedColor = R.color.red_light;
+        selectedColor = R.color.blue_dark;
         addButtons();
     }
 
     void addButtons() {
         ArrayList<Button> arrayList = new ArrayList<Button>();
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 100; i++) {
             Button newButton = new Button(this);
             String buttonText = "";
             //++btn_id;
@@ -53,7 +55,7 @@ public class OtherBoardActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     System.out.println("clicked: " + newButton.getId());
-                    newButton.setBackgroundTintList(ContextCompat.getColorStateList(view.getContext(), R.color.red_light));
+                    newButton.setBackgroundTintList(ContextCompat.getColorStateList(view.getContext(), selectedColor));
                 }
             });
             arrayList.add(newButton);
