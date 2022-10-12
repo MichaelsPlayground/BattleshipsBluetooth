@@ -61,6 +61,7 @@ public class ButtonAdapter extends BaseAdapter {
             buttonText += (btn_id % 10);
             //btn_id++;
             btn.setText(buttonText);
+            btn.setId(btn_id);
             ++btn_id;
         } else {
             btn = (Button) view;

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ListAdapter;
 
 public class OwnBoardActivity extends AppCompatActivity {
 
@@ -25,6 +26,27 @@ public class OwnBoardActivity extends AppCompatActivity {
         deployRandom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if (gridview != null) {
+                    System.out.println("gridview is not null: " + gridview.toString());
+                }
+                ListAdapter adapter = gridview.getAdapter();
+                if (adapter == null) {
+                    System.out.println("adapter is NULL");
+                }
+                Object obj =  adapter.getItem(1);
+                if (obj == null) {
+                    System.out.println("obj is NULL");
+                }
+
+
+                Object object = gridview.getAdapter().getItem(0);
+                if (object == null) {
+                    System.out.println("object is Null");
+                } else {
+                    System.out.println("object: " + object);
+                }
+
                 // todo this is not the final routine
                 // ship 1 = 5 buttons to fill
                 for (int i = 0; i < 5; i++) {
