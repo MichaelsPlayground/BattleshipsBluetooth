@@ -12,11 +12,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
@@ -25,6 +32,8 @@ public class OtherBoardActivity extends AppCompatActivity {
     GridView gridview;
 
     int selectedColor;
+
+    private static String fileNameOther = "game_123456_other.txt";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +45,57 @@ public class OtherBoardActivity extends AppCompatActivity {
         selectedColor = R.color.red_light;
         selectedColor = R.color.blue_dark;
         addButtons();
+
+        try {
+            loadBoardFromInternal(fileNameOther);
+        } catch (RuntimeException e) {
+            // new game, save the empty board
+            saveBoardToInternal(fileNameOther);
+        }
+        // receiving data from others
+        Intent intent = getIntent();
+        int bomb = intent.getIntExtra("ButtonNumber", 100);
+        boolean bombResult = intent.getBooleanExtra("ButtonNumberResult", false);
+        boolean shipIsSunk = intent.getBooleanExtra("ShipSinkResult", false);
+        // todo check for intent.getBooleanExtra("ShipSinkResult", false);
+        String gameNumber = intent.getStringExtra("GameNumber");
+        if (bomb < 100) {
+            System.out.println("Other Board, bomb confirmed: " + bomb);
+            System.out.println("Other Board, bomb result: " + bombResult);
+            System.out.println("Other Board, ship sunk: " + shipIsSunk);
+            // first load the stored board
+            loadBoardFromInternal(fileNameOther);
+            // check for color from bomb
+            if (bombResult == false) {
+                // no ship found on that place
+                Button btnShip = (Button) gridview.getAdapter().getItem(bomb);
+                btnShip.setBackgroundColor( getResources().getColor(R.color.grey_dark));
+                saveBoardToInternal(fileNameOther);
+            } else {
+                Button btnShip = (Button) gridview.getAdapter().getItem(bomb);
+                btnShip.setBackgroundColor( getResources().getColor(R.color.red_dark));
+                saveBoardToInternal(fileNameOther);
+                if (shipIsSunk) {
+                Toast toast = Toast. makeText(getApplicationContext(),"Gratulation: ship IS SUNK",Toast. LENGTH_SHORT);
+                toast. setMargin(50,50);
+                toast. show();
+                }
+                else {
+                    Toast toast = Toast. makeText(getApplicationContext(),"ship is NOT sunk",Toast. LENGTH_SHORT);
+                    toast. setMargin(50,50);
+                    toast. show();
+                }
+            }
+        }
+
+        Button reset = findViewById(R.id.btnOtherBoardReset);
+        reset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addButtons();
+                saveBoardToInternal(fileNameOther);
+            }
+        });
 
         Button deployRandom = findViewById(R.id.btnOwnBoardDeployRandom);
         deployRandom.setOnClickListener(new View.OnClickListener() {
@@ -82,32 +142,32 @@ public class OtherBoardActivity extends AppCompatActivity {
             public void onClick(View view) {
                 System.out.println("checkButton");
                 int buttonToCheck = 04;
-                int checkedColor = checkForShipColor2(buttonToCheck);
+                int checkedColor = checkForShipColor(buttonToCheck);
                 System.out.println("checkForShipColor: " + checkedColor
                         + " shipType: " + getShipType(checkedColor));
 
                 buttonToCheck = 11;
-                checkedColor = checkForShipColor2(buttonToCheck);
+                checkedColor = checkForShipColor(buttonToCheck);
                 System.out.println("checkForShipColor: " + checkedColor
                         + " shipType: " + getShipType(checkedColor));
 
                 buttonToCheck = 21;
-                checkedColor = checkForShipColor2(buttonToCheck);
+                checkedColor = checkForShipColor(buttonToCheck);
                 System.out.println("checkForShipColor: " + checkedColor
                         + " shipType: " + getShipType(checkedColor));
 
                 buttonToCheck = 31;
-                checkedColor = checkForShipColor2(buttonToCheck);
+                checkedColor = checkForShipColor(buttonToCheck);
                 System.out.println("checkForShipColor: " + checkedColor
                         + " shipType: " + getShipType(checkedColor));
 
                 buttonToCheck = 41;
-                checkedColor = checkForShipColor2(buttonToCheck);
+                checkedColor = checkForShipColor(buttonToCheck);
                 System.out.println("checkForShipColor: " + checkedColor
                         + " shipType: " + getShipType(checkedColor));
 
                 buttonToCheck = 16;
-                checkedColor = checkForShipColor2(buttonToCheck);
+                checkedColor = checkForShipColor(buttonToCheck);
                 System.out.println("checkForShipColor: " + checkedColor
                         + " shipType: " + getShipType(checkedColor));
             }
@@ -118,6 +178,8 @@ public class OtherBoardActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 inputBomb();
+                // save the state
+                saveBoardToInternal(fileNameOther);
             }
         });
     }
@@ -140,7 +202,7 @@ public class OtherBoardActivity extends AppCompatActivity {
         return "no";
     }
 
-    private int checkForShipColor2(int buttonNumber) {
+    private int checkForShipColor(int buttonNumber) {
         Button btnCheck = (Button) gridview.getAdapter().getItem(buttonNumber);
         try {
             ColorDrawable colorDrawable = (ColorDrawable) btnCheck.getBackground();
@@ -211,7 +273,6 @@ public class OtherBoardActivity extends AppCompatActivity {
                     intent.putExtra("GameNumber", "123456");
                     intent.putExtra("ButtonNumber", buttonNumber);
                     startActivity(intent);
-
                 }
             });
             arrayList.add(newButton);
@@ -246,5 +307,51 @@ public class OtherBoardActivity extends AppCompatActivity {
         });
 
         alert.show();
+    }
+
+    private void saveBoardToInternal(String filename) {
+        int[] shipNumber = new int[100];
+        for (int i = 0; i < 100; i++) {
+            shipNumber[i] = checkForShipColor(i);
+        }
+        BoardModel ownBoardModel = new BoardModel(shipNumber);
+        FileOutputStream fos = null;
+        ObjectOutputStream oos = null;
+        try {
+            fos = openFileOutput(filename, MODE_PRIVATE);
+            oos = new ObjectOutputStream(fos);
+            oos.writeObject(ownBoardModel);
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("** state saved to internal storage");
+    }
+
+    private void loadBoardFromInternal(String fileName) {
+        FileInputStream fis = null;
+        ObjectInputStream ois = null;
+        Object obj = null;
+        try {
+            fis = openFileInput(fileName);
+            ois = new ObjectInputStream(fis);
+            obj = ois.readObject();
+            ois.close();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        BoardModel boardModel;
+        boardModel = (BoardModel) obj;
+        int[] shipNumber = boardModel.getColor();
+        int shipNumberSize = shipNumber.length;
+        System.out.println("shipNumberSize: " + shipNumberSize);
+        for (int i = 0; i < shipNumberSize; i++) {
+            int shipColor = shipNumber[i];
+            if (shipColor != 0) {
+                Button btnShip = (Button) gridview.getAdapter().getItem(i);
+                btnShip.setBackgroundColor(shipColor);
+            }
+        }
+        System.out.println("own board state loaded");
     }
 }

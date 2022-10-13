@@ -1,6 +1,7 @@
 package de.androidcrypto.battleshipsbluetooth;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
@@ -24,6 +25,7 @@ public class OwnBoardActivity extends AppCompatActivity {
     GridView gridview;
 
     int selectedColor;
+    private static String fileNameOwn = "game_123456_own.txt";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +38,60 @@ public class OwnBoardActivity extends AppCompatActivity {
         selectedColor = R.color.blue_dark;
         addButtons();
 
+        // if we receive data from the other device
+        Intent intent = getIntent();
+        int bomb = intent.getIntExtra("ButtonNumber", 100);
+        String gameNumber = intent.getStringExtra("GameNumber");
+        if (bomb < 100) {
+            System.out.println("Own Board, bomb on: " + bomb);
+            // first load the stored board
+            loadBoardFromInternal(fileNameOwn);
+            // check for color from bomb
+            int colorBoard = checkForShipColor(bomb);
+            if (colorBoard == 0) {
+                System.out.println("Own Board, no ship was found on this place");
+                // no ship found on that place
+                Button btnShip = (Button) gridview.getAdapter().getItem(bomb);
+                btnShip.setBackgroundColor( getResources().getColor(R.color.grey_dark));
+                Intent intentResult = new Intent(OwnBoardActivity.this, OtherBoardActivity.class);
+                intentResult.putExtra("GameNumber", "123456");
+                intentResult.putExtra("ButtonNumber", bomb);
+                intentResult.putExtra("ButtonNumberResult", false);
+                intentResult.putExtra("ShipSinkResult", false);
+                startActivity(intentResult);
+                saveBoardToInternal(fileNameOwn);
+            } else {
+                System.out.println("Own Board, ship was found on this place: " + bomb);
+                Button btnShip = (Button) gridview.getAdapter().getItem(bomb);
+                int oldColor = checkForShipColor(bomb); // we need this color to check for remaining colors
+                System.out.println("Own Board, oldColor: " + oldColor);
+                btnShip.setBackgroundColor(getResources().getColor(R.color.red_dark));
+                int oldColorRemaining = countColors(oldColor);
+                System.out.println("Own Board, oldColorRemaining: " + oldColorRemaining);
+                Intent intentResult = new Intent(OwnBoardActivity.this, OtherBoardActivity.class);
+                intentResult.putExtra("GameNumber", "123456");
+                intentResult.putExtra("ButtonNumber", bomb);
+                intentResult.putExtra("ButtonNumberResult", true);
+                if (oldColorRemaining == 0) {
+                    // ship is sunk
+                    intentResult.putExtra("ShipSinkResult", true);
+                } else {
+                    // ship is not sunk
+                    intentResult.putExtra("ShipSinkResult", false);
+                }
+                startActivity(intentResult);
+                saveBoardToInternal(fileNameOwn);
+            }
+        }
+
+
+
         Button deployRandom = findViewById(R.id.btnOwnBoardDeployRandom);
         deployRandom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // todo this is not the final routine
+                addButtons();
                 // ship 1 = 5 buttons to fill
                 int startId = 0;
                 for (int i = 0; i < 5; i++) {
@@ -72,6 +123,8 @@ public class OwnBoardActivity extends AppCompatActivity {
                     btnShip.setBackgroundColor(getResources().getColor(R.color.purple_light));
                     //btnShip.setBackgroundTintList(ContextCompat.getColorStateList(view.getContext(), R.color.purple_light));
                 }
+                deactivateButtonOnClickListener();
+                saveBoardToInternal(fileNameOwn);
             }
         });
 
@@ -124,22 +177,8 @@ public class OwnBoardActivity extends AppCompatActivity {
         saveState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int[] shipNumber = new int[100];
-                for (int i = 0; i < 100; i++) {
-                    shipNumber[i] = checkForShipColor(i);
-                }
-                OwnBoardModel ownBoardModel = new OwnBoardModel(shipNumber);
-                FileOutputStream fos = null;
-                ObjectOutputStream oos = null;
-                try {
-                    fos = openFileOutput("game_123456.txt", MODE_PRIVATE);
-                    oos = new ObjectOutputStream(fos);
-                    oos.writeObject(ownBoardModel);
-                    fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("** state saved to internal storage");
+                String fileName = "game_123456_own.txt";
+                saveBoardToInternal(fileName);
             }
         });
 
@@ -147,34 +186,75 @@ public class OwnBoardActivity extends AppCompatActivity {
         loadState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FileInputStream fis = null;
-                ObjectInputStream ois = null;
-                Object obj = null;
-                try {
-                    fis = openFileInput("game_123456.txt");
-                    ois = new ObjectInputStream(fis);
-                    obj = ois.readObject();
-                    ois.close();
-                } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-                OwnBoardModel ownBoardModel;
-                ownBoardModel = (OwnBoardModel) obj;
-                int[] shipNumber = ownBoardModel.getColor();
-                int shipNumberSize = shipNumber.length;
-                System.out.println("shipNumberSize: " + shipNumberSize);
-                for (int i = 0; i < shipNumberSize; i++) {
-                    int shipColor = shipNumber[i];
-                    if (shipColor != 0) {
-                        Button btnShip = (Button) gridview.getAdapter().getItem(i);
-                        btnShip.setBackgroundColor(shipColor);
-                    }
-                }
-                System.out.println("own board state loaded");
-
+                String fileName = "game_123456_own.txt";
+                loadBoardFromInternal(fileName);
             }
         });
 
+    }
+
+    private int countColors(int countColor) {
+        int count = 0;
+        for (int i = 0; i < 100; i++) {
+            int foundColor = checkForShipColor(i);
+            if (countColor == foundColor) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private void saveBoardToInternal(String filename) {
+        int[] shipNumber = new int[100];
+        for (int i = 0; i < 100; i++) {
+            shipNumber[i] = checkForShipColor(i);
+        }
+        OwnBoardModel ownBoardModel = new OwnBoardModel(shipNumber);
+        FileOutputStream fos = null;
+        ObjectOutputStream oos = null;
+        try {
+            fos = openFileOutput(filename, MODE_PRIVATE);
+            oos = new ObjectOutputStream(fos);
+            oos.writeObject(ownBoardModel);
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("** state saved to internal storage");
+    }
+
+    private void loadBoardFromInternal(String fileName) {
+        FileInputStream fis = null;
+        ObjectInputStream ois = null;
+        Object obj = null;
+        try {
+            fis = openFileInput(fileName);
+            ois = new ObjectInputStream(fis);
+            obj = ois.readObject();
+            ois.close();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        OwnBoardModel ownBoardModel;
+        ownBoardModel = (OwnBoardModel) obj;
+        int[] shipNumber = ownBoardModel.getColor();
+        int shipNumberSize = shipNumber.length;
+        System.out.println("shipNumberSize: " + shipNumberSize);
+        for (int i = 0; i < shipNumberSize; i++) {
+            int shipColor = shipNumber[i];
+            if (shipColor != 0) {
+                Button btnShip = (Button) gridview.getAdapter().getItem(i);
+                btnShip.setBackgroundColor(shipColor);
+            }
+        }
+        System.out.println("own board state loaded");
+    }
+
+    private void deactivateButtonOnClickListener() {
+        for (int i = 0; i < 100; i++) {
+            Button btnShip = (Button) gridview.getAdapter().getItem(i);
+            btnShip.setOnClickListener(null);
+        }
     }
 
     private String getShipType(int checkedColor) {

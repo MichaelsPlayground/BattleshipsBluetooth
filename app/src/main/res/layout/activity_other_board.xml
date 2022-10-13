@@ -57,11 +57,21 @@
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/btnOwnBoardDeployRandom"
+                android:id="@+id/btnOtherBoardReset"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="4dp"
+                android:text="reset" />
+
+            <Button
+                android:id="@+id/btnOwnBoardDeployRandom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="4dp"
                 android:text="deploy ships randomly" />
@@ -76,13 +86,13 @@
                 android:layout_marginBottom="4dp"
                 android:text="check button" />
 
-                <Button
-                    android:id="@+id/btnOwnBoardBomb"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:text="place bomb" />
+            <Button
+                android:id="@+id/btnOwnBoardBomb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="place bomb" />
 
             <TextView
                 android:id="@+id/tvInformation2"
