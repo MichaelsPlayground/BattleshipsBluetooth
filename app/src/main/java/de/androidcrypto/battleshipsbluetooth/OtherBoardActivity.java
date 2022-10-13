@@ -273,6 +273,7 @@ public class OtherBoardActivity extends AppCompatActivity {
                     intent.putExtra("GameNumber", "123456");
                     intent.putExtra("ButtonNumber", buttonNumber);
                     startActivity(intent);
+                    finish();
                 }
             });
             arrayList.add(newButton);

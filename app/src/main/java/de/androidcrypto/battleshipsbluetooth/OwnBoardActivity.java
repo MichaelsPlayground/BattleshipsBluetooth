@@ -34,9 +34,16 @@ public class OwnBoardActivity extends AppCompatActivity {
 
         // populate the buttons
         gridview = (GridView) findViewById(R.id.activity_grid);
-        selectedColor = R.color.red_light;
+        //selectedColor = R.color.red_light;
         selectedColor = R.color.blue_dark;
         addButtons();
+
+        try {
+            loadBoardFromInternal(fileNameOwn);
+        } catch (RuntimeException e) {
+            // new game, save the empty board
+            saveBoardToInternal(fileNameOwn);
+        }
 
         // if we receive data from the other device
         Intent intent = getIntent();
@@ -60,12 +67,16 @@ public class OwnBoardActivity extends AppCompatActivity {
                 intentResult.putExtra("ShipSinkResult", false);
                 startActivity(intentResult);
                 saveBoardToInternal(fileNameOwn);
+                finish();
             } else {
                 System.out.println("Own Board, ship was found on this place: " + bomb);
                 Button btnShip = (Button) gridview.getAdapter().getItem(bomb);
                 int oldColor = checkForShipColor(bomb); // we need this color to check for remaining colors
                 System.out.println("Own Board, oldColor: " + oldColor);
-                btnShip.setBackgroundColor(getResources().getColor(R.color.red_dark));
+                // now we are setting the background color depending on the oldColor
+                int newColor = getBombedColor(oldColor);
+                System.out.println("Own Board, newColor: " + newColor);
+                btnShip.setBackgroundColor(newColor);
                 int oldColorRemaining = countColors(oldColor);
                 System.out.println("Own Board, oldColorRemaining: " + oldColorRemaining);
                 Intent intentResult = new Intent(OwnBoardActivity.this, OtherBoardActivity.class);
@@ -81,6 +92,7 @@ public class OwnBoardActivity extends AppCompatActivity {
                 }
                 startActivity(intentResult);
                 saveBoardToInternal(fileNameOwn);
+                finish();
             }
         }
 
@@ -257,6 +269,32 @@ public class OwnBoardActivity extends AppCompatActivity {
         }
     }
 
+    private int getBombedColor(int oldColor) {
+        int newColor = 0;
+        switch (oldColor) {
+            case -4274689:
+                newColor = R.color.blue_dark;
+                break;
+            case -3277895:
+                newColor = R.color.green_dark;
+                break;
+            case -1074534:
+                newColor = R.color.red_dark;
+                break;
+            case -321:
+                newColor = R.color.yellow_dark;
+                break;
+            case -1261569:
+                newColor = R.color.purple_dark;
+                break;
+            case 0:
+                newColor = R.color.grey_dark;
+                break;
+        }
+        return newColor;
+    }
+
+
     private String getShipType(int checkedColor) {
         switch (checkedColor) {
             case -4274689:
@@ -313,7 +351,7 @@ public class OwnBoardActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     System.out.println("clicked: " + newButton.getId());
                     //newButton.setBackgroundTintList(ContextCompat.getColorStateList(view.getContext(), selectedColor));
-                    newButton.setBackgroundColor(getResources().getColor(R.color.red_light));
+                    newButton.setBackgroundColor(getResources().getColor(R.color.blue_dark));
                 }
             });
             arrayList.add(newButton);
