@@ -1,6 +1,7 @@
 package de.androidcrypto.battleshipsbluetooth;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -200,9 +201,17 @@ public class OtherBoardActivity extends AppCompatActivity {
             newButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    System.out.println("clicked: " + newButton.getId());
+                    int buttonNumber = newButton.getId();
+                    System.out.println("clicked: " + buttonNumber);
                     //newButton.setBackgroundTintList(ContextCompat.getColorStateList(view.getContext(), selectedColor));
-                    newButton.setBackgroundColor(getResources().getColor(R.color.red_light));
+                    newButton.setBackgroundColor(getResources().getColor(R.color.brown_saddle));
+                    newButton.setOnClickListener(null); // stop clicking this button again
+                    System.out.println("Others Board, button clicked: " + buttonNumber);
+                    Intent intent = new Intent(OtherBoardActivity.this, OwnBoardActivity.class);
+                    intent.putExtra("GameNumber", "123456");
+                    intent.putExtra("ButtonNumber", buttonNumber);
+                    startActivity(intent);
+
                 }
             });
             arrayList.add(newButton);

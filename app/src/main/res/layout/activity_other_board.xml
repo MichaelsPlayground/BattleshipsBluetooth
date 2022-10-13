@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:text="This is your own board"
+        android:text="This is others board"
         android:textAlignment="center"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -55,28 +55,6 @@
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold" />
-
-            <RadioGroup
-                android:id="@+id/myRadioGroup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/text"
-                android:layout_gravity="center_horizontal"
-                android:checkedButton="@+id/horizontal"
-                android:orientation="horizontal">
-
-                <RadioButton
-                    android:id="@+id/horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="horizontal" />
-
-                <RadioButton
-                    android:id="@+id/vertically"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="vertical" />
-            </RadioGroup>
 
             <Button
                 android:id="@+id/btnOwnBoardDeployRandom"
@@ -120,4 +98,3 @@
 
     </ScrollView>
 </LinearLayout>
-

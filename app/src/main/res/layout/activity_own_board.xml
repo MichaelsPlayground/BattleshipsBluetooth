@@ -106,6 +106,23 @@
                 android:layout_marginEnd="16dp"
                 android:text="place bomb" />
 
+            <Button
+                android:id="@+id/btnOwnBoardSaveState"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="save state" />
+
+            <Button
+                android:id="@+id/btnOwnBoardLoadState"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="load state" />
+
+
             <TextView
                 android:id="@+id/tvInformation2"
                 android:layout_width="match_parent"

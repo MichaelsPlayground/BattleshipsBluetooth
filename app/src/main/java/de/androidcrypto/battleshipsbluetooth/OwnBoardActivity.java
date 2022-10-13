@@ -11,6 +11,12 @@ import android.widget.GridView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 public class OwnBoardActivity extends AppCompatActivity {
@@ -22,7 +28,7 @@ public class OwnBoardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_other_board);
+        setContentView(R.layout.activity_own_board);
 
         // populate the buttons
         gridview = (GridView) findViewById(R.id.activity_grid);
@@ -75,32 +81,32 @@ public class OwnBoardActivity extends AppCompatActivity {
             public void onClick(View view) {
                 System.out.println("checkButton");
                 int buttonToCheck = 04;
-                int checkedColor = checkForShipColor2(buttonToCheck);
+                int checkedColor = checkForShipColor(buttonToCheck);
                 System.out.println("checkForShipColor: " + checkedColor
                         + " shipType: " + getShipType(checkedColor));
 
                 buttonToCheck = 11;
-                checkedColor = checkForShipColor2(buttonToCheck);
+                checkedColor = checkForShipColor(buttonToCheck);
                 System.out.println("checkForShipColor: " + checkedColor
                         + " shipType: " + getShipType(checkedColor));
 
                 buttonToCheck = 21;
-                checkedColor = checkForShipColor2(buttonToCheck);
+                checkedColor = checkForShipColor(buttonToCheck);
                 System.out.println("checkForShipColor: " + checkedColor
                         + " shipType: " + getShipType(checkedColor));
 
                 buttonToCheck = 31;
-                checkedColor = checkForShipColor2(buttonToCheck);
+                checkedColor = checkForShipColor(buttonToCheck);
                 System.out.println("checkForShipColor: " + checkedColor
                         + " shipType: " + getShipType(checkedColor));
 
                 buttonToCheck = 41;
-                checkedColor = checkForShipColor2(buttonToCheck);
+                checkedColor = checkForShipColor(buttonToCheck);
                 System.out.println("checkForShipColor: " + checkedColor
                         + " shipType: " + getShipType(checkedColor));
 
                 buttonToCheck = 16;
-                checkedColor = checkForShipColor2(buttonToCheck);
+                checkedColor = checkForShipColor(buttonToCheck);
                 System.out.println("checkForShipColor: " + checkedColor
                         + " shipType: " + getShipType(checkedColor));
             }
@@ -113,6 +119,62 @@ public class OwnBoardActivity extends AppCompatActivity {
                 inputBomb();
             }
         });
+
+        Button saveState = findViewById(R.id.btnOwnBoardSaveState);
+        saveState.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int[] shipNumber = new int[100];
+                for (int i = 0; i < 100; i++) {
+                    shipNumber[i] = checkForShipColor(i);
+                }
+                OwnBoardModel ownBoardModel = new OwnBoardModel(shipNumber);
+                FileOutputStream fos = null;
+                ObjectOutputStream oos = null;
+                try {
+                    fos = openFileOutput("game_123456.txt", MODE_PRIVATE);
+                    oos = new ObjectOutputStream(fos);
+                    oos.writeObject(ownBoardModel);
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("** state saved to internal storage");
+            }
+        });
+
+        Button loadState = findViewById(R.id.btnOwnBoardLoadState);
+        loadState.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FileInputStream fis = null;
+                ObjectInputStream ois = null;
+                Object obj = null;
+                try {
+                    fis = openFileInput("game_123456.txt");
+                    ois = new ObjectInputStream(fis);
+                    obj = ois.readObject();
+                    ois.close();
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                OwnBoardModel ownBoardModel;
+                ownBoardModel = (OwnBoardModel) obj;
+                int[] shipNumber = ownBoardModel.getColor();
+                int shipNumberSize = shipNumber.length;
+                System.out.println("shipNumberSize: " + shipNumberSize);
+                for (int i = 0; i < shipNumberSize; i++) {
+                    int shipColor = shipNumber[i];
+                    if (shipColor != 0) {
+                        Button btnShip = (Button) gridview.getAdapter().getItem(i);
+                        btnShip.setBackgroundColor(shipColor);
+                    }
+                }
+                System.out.println("own board state loaded");
+
+            }
+        });
+
     }
 
     private String getShipType(int checkedColor) {
@@ -133,7 +195,7 @@ public class OwnBoardActivity extends AppCompatActivity {
         return "no";
     }
 
-    private int checkForShipColor2(int buttonNumber) {
+    private int checkForShipColor(int buttonNumber) {
         Button btnCheck = (Button) gridview.getAdapter().getItem(buttonNumber);
         try {
             ColorDrawable colorDrawable = (ColorDrawable) btnCheck.getBackground();
