@@ -35,8 +35,7 @@
         android:horizontalSpacing="2dp"
         android:numColumns="10"
         android:stretchMode="columnWidth"
-        android:verticalSpacing="2dp"
-        />
+        android:verticalSpacing="2dp" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -58,42 +57,64 @@
                 android:textStyle="bold" />
 
             <RadioGroup
+                android:id="@+id/myRadioGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/text"
-                android:id="@+id/myRadioGroup"
-                android:orientation="horizontal"
                 android:layout_gravity="center_horizontal"
-                android:checkedButton="@+id/horizontal" >
+                android:checkedButton="@+id/horizontal"
+                android:orientation="horizontal">
 
                 <RadioButton
+                    android:id="@+id/horizontal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/horizontal"
                     android:text="horizontal" />
 
                 <RadioButton
+                    android:id="@+id/vertically"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/vertically"
                     android:text="vertical" />
-
-
             </RadioGroup>
 
             <Button
                 android:id="@+id/btnOwnBoardDeployRandom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="4dp"
                 android:text="deploy ships randomly" />
 
             <Button
                 android:id="@+id/btnOwnBoardCheckButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="4dp"
                 android:text="check button" />
+
+                <Button
+                    android:id="@+id/btnOwnBoardBomb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="place bomb" />
+
+            <TextView
+                android:id="@+id/tvInformation2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="END of view"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 

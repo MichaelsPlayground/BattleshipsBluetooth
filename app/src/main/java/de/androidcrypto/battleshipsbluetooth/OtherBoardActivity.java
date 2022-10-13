@@ -1,5 +1,6 @@
 package de.androidcrypto.battleshipsbluetooth;
 
+import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -8,8 +9,10 @@ import android.graphics.drawable.RippleDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -108,16 +111,30 @@ public class OtherBoardActivity extends AppCompatActivity {
                         + " shipType: " + getShipType(checkedColor));
             }
         });
+
+        Button placeBomb = findViewById(R.id.btnOwnBoardBomb);
+        placeBomb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                inputBomb();
+            }
+        });
     }
 
     private String getShipType(int checkedColor) {
         switch (checkedColor) {
-            case -4274689: return "blue";
-            case -3277895: return "green";
-            case -1074534: return "red";
-            case -321: return "yellow";
-            case -1261569: return "purple";
-            case 0: return "no";
+            case -4274689:
+                return "blue";
+            case -3277895:
+                return "green";
+            case -1074534:
+                return "red";
+            case -321:
+                return "yellow";
+            case -1261569:
+                return "purple";
+            case 0:
+                return "no";
         }
         return "no";
     }
@@ -132,7 +149,7 @@ public class OtherBoardActivity extends AppCompatActivity {
         }
     }
 
-    private int getButtonBackgroundColor(Button button){
+    private int getButtonBackgroundColor(Button button) {
         int buttonColor = 0;
 
         if (button.getBackground() instanceof ColorDrawable) {
@@ -193,6 +210,32 @@ public class OtherBoardActivity extends AppCompatActivity {
         }
         ButtonAdapter3 buttonAdapter3 = new ButtonAdapter3(this, arrayList);
         gridview.setAdapter(buttonAdapter3);
+    }
 
+    private void inputBomb() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        alert.setTitle("Place a bomb");
+        alert.setMessage("Input a number (00-99) to place your bomb");
+
+        // Set an EditText view to get user input
+        final EditText input = new EditText(this);
+        alert.setView(input);
+
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String value = input.getText().toString();
+                System.out.println("input: " + value);
+                // Do something with value!
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+
+        alert.show();
     }
 }
