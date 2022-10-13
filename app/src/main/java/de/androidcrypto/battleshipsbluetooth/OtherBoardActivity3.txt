@@ -3,7 +3,6 @@ package de.androidcrypto.battleshipsbluetooth;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.PaintDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Bundle;
 import android.view.View;
@@ -13,10 +12,12 @@ import android.widget.GridView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.material.button.MaterialButton;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
-public class OtherBoardActivity extends AppCompatActivity {
+public class OtherBoardActivity3 extends AppCompatActivity {
 
     GridView gridview;
 
@@ -42,32 +43,27 @@ public class OtherBoardActivity extends AppCompatActivity {
                 int startId = 0;
                 for (int i = 0; i < 5; i++) {
                     Button btnShip = (Button) gridview.getAdapter().getItem(i);
-                    btnShip.setBackgroundColor(getResources().getColor(R.color.red_light));
-                    //btnShip.setBackgroundTintList(ContextCompat.getColorStateList(view.getContext(), R.color.red_light));
+                    btnShip.setBackgroundTintList(ContextCompat.getColorStateList(view.getContext(), R.color.red_light));
                 }
                 // ship 2 = 4 buttons to fill
                 for (int i = 10; i < 14; i++) {
                     Button btnShip = (Button) gridview.getAdapter().getItem(i);
-                    btnShip.setBackgroundColor(getResources().getColor(R.color.blue_light));
-                    //btnShip.setBackgroundTintList(ContextCompat.getColorStateList(view.getContext(), R.color.blue_light));
+                    btnShip.setBackgroundTintList(ContextCompat.getColorStateList(view.getContext(), R.color.blue_light));
                 }
                 // ship 3 = 3 buttons to fill
                 for (int i = 20; i < 23; i++) {
                     Button btnShip = (Button) gridview.getAdapter().getItem(i);
-                    btnShip.setBackgroundColor(getResources().getColor(R.color.green_light));
-                    //btnShip.setBackgroundTintList(ContextCompat.getColorStateList(view.getContext(), R.color.green_light));
+                    btnShip.setBackgroundTintList(ContextCompat.getColorStateList(view.getContext(), R.color.green_light));
                 }
                 // ship 4 = 3 buttons to fill
                 for (int i = 30; i < 33; i++) {
                     Button btnShip = (Button) gridview.getAdapter().getItem(i);
-                    btnShip.setBackgroundColor(getResources().getColor(R.color.yellow_light));
-                    //btnShip.setBackgroundTintList(ContextCompat.getColorStateList(view.getContext(), R.color.yellow_light));
+                    btnShip.setBackgroundTintList(ContextCompat.getColorStateList(view.getContext(), R.color.yellow_light));
                 }
                 // ship 5 = 2 buttons to fill
                 for (int i = 40; i < 42; i++) {
                     Button btnShip = (Button) gridview.getAdapter().getItem(i);
-                    btnShip.setBackgroundColor(getResources().getColor(R.color.purple_light));
-                    //btnShip.setBackgroundTintList(ContextCompat.getColorStateList(view.getContext(), R.color.purple_light));
+                    btnShip.setBackgroundTintList(ContextCompat.getColorStateList(view.getContext(), R.color.purple_light));
                 }
             }
         });
@@ -78,58 +74,30 @@ public class OtherBoardActivity extends AppCompatActivity {
             public void onClick(View view) {
                 System.out.println("checkButton");
                 int buttonToCheck = 04;
-                int checkedColor = checkForShipColor2(buttonToCheck);
-                System.out.println("checkForShipColor: " + checkedColor
-                        + " shipType: " + getShipType(checkedColor));
+                int checkedColor = checkForShipColor(buttonToCheck);
+                System.out.println("checkForShipColor: " + checkedColor);
 
-                buttonToCheck = 11;
-                checkedColor = checkForShipColor2(buttonToCheck);
-                System.out.println("checkForShipColor: " + checkedColor
-                        + " shipType: " + getShipType(checkedColor));
-
-                buttonToCheck = 21;
-                checkedColor = checkForShipColor2(buttonToCheck);
-                System.out.println("checkForShipColor: " + checkedColor
-                        + " shipType: " + getShipType(checkedColor));
-
-                buttonToCheck = 31;
-                checkedColor = checkForShipColor2(buttonToCheck);
-                System.out.println("checkForShipColor: " + checkedColor
-                        + " shipType: " + getShipType(checkedColor));
-
-                buttonToCheck = 41;
-                checkedColor = checkForShipColor2(buttonToCheck);
-                System.out.println("checkForShipColor: " + checkedColor
-                        + " shipType: " + getShipType(checkedColor));
-
-                buttonToCheck = 16;
-                checkedColor = checkForShipColor2(buttonToCheck);
-                System.out.println("checkForShipColor: " + checkedColor
-                        + " shipType: " + getShipType(checkedColor));
+                buttonToCheck = 6;
+                checkedColor = checkForShipColor(buttonToCheck);
+                System.out.println("checkForShipColor: " + checkedColor);
             }
         });
     }
 
-    private String getShipType(int checkedColor) {
-        switch (checkedColor) {
-            case -4274689: return "blue";
-            case -3277895: return "green";
-            case -1074534: return "red";
-            case -321: return "yellow";
-            case -1261569: return "purple";
-            case 0: return "no";
-        }
-        return "no";
-    }
-
-    private int checkForShipColor2(int buttonNumber) {
+    private int checkForShipColor(int buttonNumber) {
         Button btnCheck = (Button) gridview.getAdapter().getItem(buttonNumber);
-        try {
-            ColorDrawable colorDrawable = (ColorDrawable) btnCheck.getBackground();
-            return colorDrawable.getColor();
-        } catch (ClassCastException e) {
-            return 0;
+        //ColorStateList buttonColor = btnCheck.getBackgroundTintList();
+        //System.out.println("checkButton for " + buttonNumber + " is " + buttonColor);
+
+        int colorId = getButtonBackgroundColor(btnCheck);
+        System.out.println("colorId: " + colorId);
+        if (colorId == R.color.red_light) {
+            System.out.println("color is red_light");
+            return 1;
+        } else {
+            System.out.println("color is NOT red_light");
         }
+        return 0; // 0 = no color
     }
 
     private int getButtonBackgroundColor(Button button){
@@ -158,10 +126,10 @@ public class OtherBoardActivity extends AppCompatActivity {
     }
 
     void addButtons() {
-        ArrayList<Button> arrayList = new ArrayList<Button>();
+        ArrayList<MaterialButton> arrayList = new ArrayList<MaterialButton>();
 
         for (int i = 0; i < 100; i++) {
-            Button newButton = new Button(this);
+            MaterialButton newButton = new MaterialButton(this);
             String buttonText = "";
             //++btn_id;
             if (i < 10) buttonText = "A";
@@ -179,13 +147,13 @@ public class OtherBoardActivity extends AppCompatActivity {
             newButton.setText(buttonText);
             newButton.setTextSize(10);
             newButton.setWidth(20);
+            newButton.setBackgroundColor(getResources().getColor(R.color.grey_light));
             newButton.setId(i);
             newButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     System.out.println("clicked: " + newButton.getId());
-                    //newButton.setBackgroundTintList(ContextCompat.getColorStateList(view.getContext(), selectedColor));
-                    newButton.setBackgroundColor(getResources().getColor(R.color.red_light));
+                    newButton.setBackgroundTintList(ContextCompat.getColorStateList(view.getContext(), selectedColor));
                 }
             });
             arrayList.add(newButton);

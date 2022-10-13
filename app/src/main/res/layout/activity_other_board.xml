@@ -88,6 +88,13 @@
                 android:layout_margin="16dp"
                 android:text="deploy ships randomly" />
 
+            <Button
+                android:id="@+id/btnOwnBoardCheckButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:text="check button" />
+
         </LinearLayout>
 
     </ScrollView>

@@ -21,4 +21,6 @@
     <color name="blue_light">#BEC5FF</color>
     <color name="purple_dark">#B300FF</color>
     <color name="purple_light">#ECBFFF</color>
+    <color name="grey_dark">#BCBCBC</color>
+    <color name="grey_light">#F1F1F1</color>
 </resources>
